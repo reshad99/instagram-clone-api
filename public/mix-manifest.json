@@ -1,0 +1,8 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/js/laravel-echo-setup.js": "/js/laravel-echo-setup.js",
+    "/js/socketio.js": "/js/socketio.js",
+    "/js/ajax.js": "/js/ajax.js",
+    "/js/main.js": "/js/main.js",
+    "/css/app.css": "/css/app.css"
+}

@@ -1,0 +1,57 @@
+version: '3'
+services:
+    web:
+        image: nginx:alpine
+        volumes:
+            - "./docker/etc/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+            - "./docker/etc/ssl:/etc/ssl"
+            - "./public:/var/www/html"
+            - "./docker/etc/nginx/default.template.conf:/etc/nginx/conf.d/default.template"
+            - "./docker/etc/nginx/nginx.conf:/etc/nginx/nginx.conf"
+            - "./docker/log:/var/log"
+        environment:
+            - NGINX_HOST=${NGINX_HOST}
+        command: /bin/sh -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+        restart: always
+        depends_on:
+            - php
+            - mysqldb
+        ports:
+            - "8080:80"
+
+    php:
+        build: "./docker/php"
+        restart: always
+        stop_signal: SIGTERM
+        volumes:
+            - "./docker/etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+            - "./public:/var/www/html"
+            - "./docker/log:/var/log"
+
+    myadmin:
+        image: phpmyadmin/phpmyadmin
+        volumes:
+            - "./docker/etc/php/php.ini:/usr/local/etc/php/php.ini"
+        environment:
+            - PMA_ARBITRARY=1
+            - PMA_HOST=mysqldb
+        restart: always
+        depends_on:
+            - mysqldb
+        links:
+            - mysqldb
+        ports:
+            - "9080:80"
+
+    mysqldb:
+        image: mysql:${MYSQL_VERSION}
+        restart: always
+        env_file:
+            - ".env"
+        environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        volumes:
+            - "./data/db/mysql:/var/lib/mysql"

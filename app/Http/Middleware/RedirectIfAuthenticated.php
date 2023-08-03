@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Providers\RouteServiceProvider;
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class RedirectIfAuthenticated
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @param  string|null  ...$guards
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function handle(Request $request, Closure $next, ...$guards)
+    {
+        $guards = empty($guards) ? [null] : $guards;
+
+        if ($request->header('Device') == 'app') {
+            return response(['status' => 'false', 'message' => 'Bu əməliyyatı yerinə yetirmək üçün hesabdan çıxmalısınız!'], 400);
+        }
+
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
+                return redirect($this->getHomePage($request));
+            }
+        }
+
+        return $next($request);
+    }
+
+    private function getHomePage(Request $request)
+    {
+        return $request->segment(1) == 'gopanel' ? RouteServiceProvider::GOPANEL_HOME : RouteServiceProvider::HOME;
+    }
+}

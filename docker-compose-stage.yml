@@ -1,0 +1,98 @@
+version: '3'
+services:
+    web:
+        image: nginx:alpine
+        volumes:
+            - "./docker/etc/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+            - "./docker/etc/ssl:/etc/ssl"
+            - "./:/var/www/html"
+            - "./docker/etc/nginx/default.template.conf:/etc/nginx/conf.d/default.template"
+            - "./docker/etc/nginx/nginx.conf:/etc/nginx/nginx.conf"
+            - "./docker/log:/var/log"
+        environment:
+            - NGINX_HOST=${NGINX_HOST}
+        command: /bin/sh -c "envsubst '$$NGINX_HOST' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+        restart: always
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.stage-yaxpoint-core.entrypoints=http"
+            - "traefik.http.routers.stage-yaxpoint-core.rule=Host(`${NGINX_HOST}`)"
+            - "traefik.http.middlewares.website-https-redirect.redirectscheme.scheme=https"
+            - "traefik.http.routers.stage-yaxpoint-core.middlewares=website-https-redirect"
+            - "traefik.http.routers.stage-yaxpoint-core-secure.entrypoints=https"
+            - "traefik.http.routers.stage-yaxpoint-core-secure.rule=Host(`${NGINX_HOST}`)"
+            - "traefik.http.routers.stage-yaxpoint-core-secure.tls=true"
+            - "traefik.http.routers.stage-yaxpoint-core-secure.tls.certresolver=cloudflare"
+            - "traefik.http.routers.stage-yaxpoint-core-secure.service=stage-yaxpoint-core"
+            - "traefik.http.services.stage-yaxpoint-core.loadbalancer.server.port=80"
+            - "traefik.http.routers.stage-yaxpoint-core-secure.middlewares=secHeaders@file"
+            - "traefik.docker.network=proxy"
+        depends_on:
+            - php
+            - mysqldb
+        networks:
+            - internal
+            - proxy
+    php:
+        build: "./docker/php"
+        restart: always
+        stop_signal: SIGTERM
+        environment:
+            CONTAINER_ROLE: main_app
+        volumes:
+            - "./docker/etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
+            - "./:/var/www/html"
+            - "./docker/log:/var/log"
+        networks:
+            - internal
+
+    myadmin:
+        image: phpmyadmin/phpmyadmin
+        volumes:
+            - "./docker/etc/php/php.ini:/usr/local/etc/php/php.ini"
+        environment:
+            - PMA_ARBITRARY=1
+            - PMA_HOST=mysqldb
+            #- PMA_ABSOLUTE_URI="stage-db.yaxpoint.com"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.stage-db-yaxpoint-core.entrypoints=http"
+            - "traefik.http.routers.stage-db-yaxpoint-core.rule=Host(`stage-db.yaxpoint.com`)"
+            - "traefik.http.middlewares.website-https-redirect.redirectscheme.scheme=https"
+            - "traefik.http.routers.stage-db-yaxpoint-core.middlewares=website-https-redirect"
+            - "traefik.http.routers.stage-db-yaxpoint-core-secure.entrypoints=https"
+            - "traefik.http.routers.stage-db-yaxpoint-core-secure.rule=Host(`stage-db.yaxpoint.com`)"
+            - "traefik.http.routers.stage-db-yaxpoint-core-secure.tls=true"
+            - "traefik.http.routers.stage-db-yaxpoint-core-secure.tls.certresolver=cloudflare"
+            - "traefik.http.routers.stage-db-yaxpoint-core-secure.service=stage-db-yaxpoint-core"
+            - "traefik.http.services.stage-db-yaxpoint-core.loadbalancer.server.port=80"
+            - "traefik.http.routers.stage-db-yaxpoint-core-secure.middlewares=secHeaders@file"
+            - "traefik.docker.network=proxy"
+        restart: always
+        networks:
+            - internal
+            - proxy
+        depends_on:
+            - mysqldb
+        links:
+            - mysqldb
+    mysqldb:
+        image: mysql:${MYSQL_VERSION}
+        restart: always
+        env_file:
+            - ".env"
+        environment:
+            - MYSQL_DATABASE=${MYSQL_DATABASE}
+            - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+            - MYSQL_USER=${MYSQL_USER}
+            - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        volumes:
+            - "./docker/data/db/mysql:/var/lib/mysql"
+        networks:
+            - internal
+
+networks:
+    proxy:
+        external: true
+    internal:
+        external: false
