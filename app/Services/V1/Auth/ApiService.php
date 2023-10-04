@@ -27,7 +27,7 @@ class ApiService extends CommonService
             ];
 
             if (!$token = auth()->attempt($credentials)) {
-                throw new Exception('Telefon nömrəsi və ya şifrə səhvdir');
+                throw new Exception('Email və ya şifrə səhvdir');
             } else {
                 return $this->respondWithToken($token, auth()->user());
             }

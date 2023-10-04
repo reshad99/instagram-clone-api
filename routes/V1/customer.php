@@ -23,7 +23,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware(['auth:customer', 'throttle:60,1'])->group(function () {
     Route::get('test', [TestController::class, 'test']);
-    Route::get('favorite-addresses', [AddressController::class, 'favoriteAddresses']);
     Route::post('update-profile', [AuthController::class, 'updateProfile']);
     Route::post('logout', [AuthController::class, 'logout']);
 });

@@ -7,19 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     protected $tableKeys = [
-        'favorite_addresses' => [
-            'foreignKey' => 'address_type_id',
-            'after' => 'user_id',
-            'table' => 'address_types',
-            'referenceId' => 'id'
-        ],
-        'drivers' => [
-            'foreignKey' => 'park_id',
-            'after' => 'id',
-            'table' => 'parks',
-            'referenceId' => 'id',
-            'null' => 'nullable'
-        ],
+
+
     ];
 
     /**

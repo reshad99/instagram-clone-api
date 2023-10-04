@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->string('phone')->unique();
-            $table->enum('gender', ['male', 'female']);
-            $table->date('birth_date')->nullable();
+            // $table->enum('gender', ['male', 'female']);
+            // $table->date('birth_date')->nullable();
             $table->string('email')->unique();
             $table->string('api_token')->nullable()->unique();
             $table->string('fcm_token')->nullable()->unique();
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('customers');
     }
 };
