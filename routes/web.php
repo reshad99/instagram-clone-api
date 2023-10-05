@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect(route('admin.dashboard'));
+    return 'Working';
 });
 
 Route::get('/t', [SendMessageController::class, 'index']);
