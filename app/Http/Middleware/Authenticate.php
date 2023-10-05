@@ -25,13 +25,6 @@ class Authenticate extends Middleware
 
     public function handle($request, Closure $next, ...$guards)
     {
-        if ($request->header('Device') != 'app') {
-
-            if (!auth()->check()) {
-                return redirect($this->getLoginPage($request));
-            }
-        }
-
         $this->authenticate($request, $guards);
 
         return $next($request);

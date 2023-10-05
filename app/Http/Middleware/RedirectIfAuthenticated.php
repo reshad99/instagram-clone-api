@@ -21,10 +21,6 @@ class RedirectIfAuthenticated
     {
         $guards = empty($guards) ? [null] : $guards;
 
-        if ($request->header('Device') == 'app') {
-            return response(['status' => 'false', 'message' => 'Bu əməliyyatı yerinə yetirmək üçün hesabdan çıxmalısınız!'], 400);
-        }
-
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 return redirect($this->getHomePage($request));
