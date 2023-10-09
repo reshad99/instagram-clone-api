@@ -44,23 +44,23 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function(ValidationException $e){
-            return response(['success' => false, 'message' => 'Məlumatlar düzgün deyil', 'errors' => $e->errors()], 422);
+            return response(['success' => false, 'statusCode' => 422, 'message' => 'Məlumatlar düzgün deyil', 'errors' => $e->errors()], 422);
         });
 
         $this->renderable(function(AuthenticationException $e){
-            return response(['success' => false, 'message' => 'Hesaba daxil olmamısınız'], 401);
+            return response(['success' => false,'statusCode' => 401, 'message' => 'Hesaba daxil olmamısınız'], 401);
         });
 
         $this->renderable(function(NotFoundHttpException $e){
-            return response(['success' => false, 'message' => 'Belə bir səhifə tapılmadı'], 404);
+            return response(['success' => false, 'statusCode' => 404, 'message' => 'Belə bir səhifə tapılmadı'], 404);
         });
 
         $this->renderable(function(ModelNotFoundException $e){
-            return response(['success' => false, 'message' => 'Belə bir məlumat tapılmadı'], 404);
+            return response(['success' => false, 'statusCode' => 404, 'message' => 'Belə bir məlumat tapılmadı'], 404);
         });
 
         $this->renderable(function(Exception $e){
-            return response(['success' => false, 'message' => $e->getMessage()], 400);
+            return response(['success' => false, 'statusCode' => 400, 'message' => $e->getMessage()], 400);
         });
     }
 }
