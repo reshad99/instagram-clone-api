@@ -33,9 +33,8 @@ class MediaRepository implements DefaultModelInterface
     public function store(array $model, Model $attachToModel = null): Model
     {
         try {
-            Log::info('atachModel'.json_encode($attachToModel));
-            Log::info('array '.json_encode($model));
-            $attachToModel->fileable()->create($model);
+            Log::channel('posts')->info("post model in mediarepository store : " . json_encode($attachToModel));
+            $attachToModel->media()->create($model);
             return $attachToModel;
         } catch (\Exception $e) {
             Log::info('media repoda error cixdi' . $e->getMessage());
@@ -48,8 +47,9 @@ class MediaRepository implements DefaultModelInterface
     }
 
 
-    public function update($id, Request $request)
+    public function update($media, array $model): Model
     {
+        return $media;
     }
 
     public function getStatic(): Builder

@@ -17,7 +17,7 @@ interface DefaultModelInterface {
 
     public function store(array $model): Model;
 
-    public function update($id, Request $request);
+    public function update(Model $model, array $data): Model;
 
     public function getStatic(): Builder;
 }

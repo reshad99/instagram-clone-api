@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -67,5 +69,37 @@ class Customer extends Authenticatable implements JWTSubject
     public function media()
     {
         return $this->morphOne(Media::class, 'fileable');
+    }
+
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class, 'follows', 'followed_id', 'follower_id');
+    }
+
+    public function follows(): BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class, 'follows', 'follower_id', 'followed_id');
+    }
+
+    public function blockedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class, 'blocks', 'blocked_id', 'blocker_id');
+    }
+
+    public function blocks(): BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class, 'blocks', 'blocker_id', 'blocked_id');
+    }
+
+    public function getFollowedAttribute(): bool
+    {
+        $myId = Auth::user()->id;
+        $follow = Follow::where('follower_id', $myId)->where('followed_id', $this->id)->first();
+
+        if ($follow) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Resources\V1\User;
+namespace App\Http\Resources\V1\Post;
 
+use App\Http\Resources\V1\MediaResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CustomerResource extends JsonResource
+class PostResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +17,11 @@ class CustomerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'username' => $this->username,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'image' => $this->fileable?->path,
-            'thumbnail_image' => $this->fileable?->thumbnail_path,
-            'followed' => $this->followed
+            'description' => $this->description,
+            'likes' => $this->likes->count(),
+            'comments' => $this->comments->count(),
+            'liked' => $this->liked,
+            'media' => MediaResource::collection($this->media)
         ];
     }
 }

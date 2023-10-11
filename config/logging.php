@@ -73,10 +73,10 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => 14,
         ],
-        
-        'vehicle' => [
+
+        'posts' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/test/vehicle.log'),
+            'path' => storage_path('logs/posts/posts.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => 14,
         ],

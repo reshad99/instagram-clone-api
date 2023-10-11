@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\V1\Api\Address\AddressController;
 use App\Http\Controllers\V1\Api\Auth\AuthController;
+use App\Http\Controllers\V1\Api\Post\PostController;
 use App\Http\Controllers\V1\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,16 @@ Route::middleware(['auth:customer', 'throttle:60,1'])->group(function () {
     Route::get('test', [TestController::class, 'test']);
     Route::post('update-profile', [AuthController::class, 'updateProfile']);
     Route::post('logout', [AuthController::class, 'logout']);
+
+    Route::prefix('posts')->group(function () {
+        Route::get('', [PostController::class, 'getPosts']);
+        Route::get('/{post}', [PostController::class, 'showPost']);
+        Route::post('save', [PostController::class, 'savePost']);
+        Route::get('like/{post}', [PostController::class, 'likePost']);
+        Route::post('comment/{post}', [PostController::class, 'addComment']);
+        Route::get('likes/{post}', [PostController::class, 'showLikes']);
+        Route::get('comments/{post}', [PostController::class, 'showComments']);
+    });
 });
 
 Route::middleware('guest')->group(function () {

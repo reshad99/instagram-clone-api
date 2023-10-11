@@ -60,6 +60,8 @@ class FileUploaderService extends CommonService
                     $fileData['height'] = $imageDimensions[1];
                 }
 
+                Log::channel('posts')->info("post model in fileuploader service save : " . json_encode($model));
+
                 return $this->mainRepository->store($fileData, $model);
             });
         } catch (\Exception $e) {
