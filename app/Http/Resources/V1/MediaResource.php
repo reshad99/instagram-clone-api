@@ -15,7 +15,7 @@ class MediaResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'path' => $request->getHost() . $this->path,
+            'path' => $request->getHttpHost() . "/" . $this->path,
             'extension' => $this->extension,
             'mime_type' => $this->mime_type,
             'file_size' => $this->file_size,
