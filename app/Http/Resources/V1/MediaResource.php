@@ -3,6 +3,7 @@
 namespace App\Http\Resources\V1;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class MediaResource extends JsonResource
 {
@@ -15,7 +16,7 @@ class MediaResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'path' => $request->getBaseUrl() . "/" . $this->path,
+            'path' => asset(Storage::url($this->path)),
             'extension' => $this->extension,
             'mime_type' => $this->mime_type,
             'file_size' => $this->file_size,
