@@ -88,7 +88,12 @@ class PostService extends CommonService
     public function likePost(Post $post)
     {
         try {
-            Like::create(['post_id' => $post->id, 'customer_id' => $this->customer->id]);
+            $likeCheck  = Like::where('post_id', $post->id)->where('customer_id', $this->customer->id)->first();
+            if ($likeCheck) {
+                $likeCheck->delete();
+            } else {
+                Like::create(['post_id' => $post->id, 'customer_id' => $this->customer->id]);
+            }
             return $this->successResponse();
         } catch (\Exception $e) {
             $this->logError($e);
