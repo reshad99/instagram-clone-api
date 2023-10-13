@@ -3,6 +3,7 @@
 namespace App\Http\Resources\V1\Post;
 
 use App\Http\Resources\V1\MediaResource;
+use App\Http\Resources\V1\User\CustomerResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
@@ -21,6 +22,7 @@ class PostResource extends JsonResource
             'likes' => $this->likes->count(),
             'comments' => $this->comments->count(),
             'liked' => $this->liked,
+            'user' => new CustomerResource($this->customer),
             'media' => MediaResource::collection($this->media)
         ];
     }
