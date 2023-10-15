@@ -19,6 +19,7 @@ class CommentResource extends JsonResource
             'id' => $this->id,
             'text' => $this->text,
             'user' => new CustomerResource($this->customer),
+            'timeDiff' => $this->created_at->diffForHumans()
         ];
     }
 }
