@@ -47,7 +47,7 @@ class PostService extends CommonService
             $follows = $this->getFollowedCustomerIds();
             $blocks = $this->getBlockedCustomerIds();
             $follows[] = $this->customer->id;
-            $posts = Post::whereIn('customer_id', $follows)->whereNotIn('customer_id', $blocks)->paginate($this->getPostsPerPage());
+            $posts = Post::whereIn('customer_id', $follows)->whereNotIn('customer_id', $blocks)->latest()->paginate($this->getPostsPerPage());
             return new PaginatedResource(PostResource::collection($posts));
         } catch (\Exception $e) {
             $this->logError($e);
