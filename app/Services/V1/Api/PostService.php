@@ -127,7 +127,7 @@ class PostService extends CommonService
 
     private function getPostsPerPage()
     {
-        return 10;
+        return 100;
     }
 
     private function logError(\Exception $e)
