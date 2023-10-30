@@ -3,6 +3,7 @@
 use App\Http\Controllers\V1\Api\Address\AddressController;
 use App\Http\Controllers\V1\Api\Auth\AuthController;
 use App\Http\Controllers\V1\Api\Post\PostController;
+use App\Http\Controllers\V1\Api\Status\StatusController;
 use App\Http\Controllers\V1\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,14 @@ Route::middleware(['auth:customer', 'throttle:60,1'])->group(function () {
         Route::post('comment/{post}', [PostController::class, 'addComment']);
         Route::get('likes/{post}', [PostController::class, 'showLikes']);
         Route::get('comments/{post}', [PostController::class, 'showComments']);
+    });
+
+    Route::prefix('statuses')->group(function () {
+        Route::get('', [StatusController::class, 'getStatuses']);
+        Route::post('/save-story', [StatusController::class, 'saveStory']);
+        Route::get('/status/{status}', [StatusController::class, 'getStatus']);
+        Route::get('/story/{story}', [StatusController::class, 'getStory']);
+        Route::get('/view-story/{story}', [StatusController::class, 'viewStory']);
     });
 });
 

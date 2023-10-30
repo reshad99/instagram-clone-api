@@ -81,6 +81,13 @@ return [
             'days' => 14,
         ],
 
+        'status' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/status/status.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+        ],
+
         'auth' => [
             'driver' => 'daily',
             'path' => storage_path('logs/auth/auth.log'),
