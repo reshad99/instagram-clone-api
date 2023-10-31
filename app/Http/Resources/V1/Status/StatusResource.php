@@ -25,7 +25,7 @@ class StatusResource extends JsonResource
         ];
 
         // Check if the resource is a collection
-        if ($this->resource instanceof Collection || $this->resource instanceof SupportCollection) {
+        if ($this instanceof Collection || $this instanceof SupportCollection) {
             $data['count'] = $this->resource->count();
         }
 
