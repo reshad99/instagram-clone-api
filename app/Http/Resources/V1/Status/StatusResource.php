@@ -21,6 +21,7 @@ class StatusResource extends JsonResource
             'viewed' => $this->viewed,
             'customer' => new CustomerResource($this->customer),
             'stories' => StoryResource::collection($this->activeStories),
+            'count' => $this->count()
         ];
     }
 
