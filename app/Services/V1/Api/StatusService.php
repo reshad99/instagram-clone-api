@@ -46,6 +46,7 @@ class StatusService extends CommonService
         try {
             $status = $this->status() ?? $this->createStatus();
             $story = new Story();
+            $story->text = $addStoryRequest->text;
             $story->status_id = $status->id;
             $story->customer_id = $this->customer->id;
             $story->save();
