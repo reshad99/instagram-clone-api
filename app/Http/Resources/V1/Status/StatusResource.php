@@ -4,8 +4,7 @@ namespace App\Http\Resources\V1\Status;
 
 use App\Http\Resources\V1\User\CustomerResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class StatusResource extends JsonResource
 {
@@ -17,18 +16,28 @@ class StatusResource extends JsonResource
      */
     public function toArray($request)
     {
-        $data = [
+        return [
             'id' => $this->id,
             'viewed' => $this->viewed,
             'customer' => new CustomerResource($this->customer),
             'stories' => StoryResource::collection($this->activeStories),
         ];
+    }
 
-        // Check if the resource is a collection
-        if ($this instanceof Collection || $this instanceof SupportCollection) {
-            $data['count'] = $this->resource->count();
+    /**
+     * Get additional data that should be returned with the resource array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function with($request)
+    {
+        if ($this->resource instanceof ResourceCollection) {
+            return [
+                'count' => $this->resource->count(),
+            ];
         }
 
-        return $data;
+        return [];
     }
 }
