@@ -3,6 +3,7 @@
 namespace App\Services\V1\Auth;
 
 use App\Services\V1\CommonService;
+use App\Traits\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class AdminService extends CommonService
 {
+    use ApiResponse;
     public function __construct()
     {
         $this->rules = [

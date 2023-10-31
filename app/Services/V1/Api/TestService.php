@@ -4,6 +4,7 @@ namespace App\Services\V1\Api;
 
 use App\Models\User;
 use App\Services\V1\CommonService;
+use App\Traits\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Log;
 
 class TestService extends CommonService
 {
+    use ApiResponse;
+
     public function __construct()
     {
       

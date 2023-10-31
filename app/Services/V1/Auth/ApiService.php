@@ -8,11 +8,14 @@ use App\Http\Requests\V1\Auth\UpdateRequest;
 use App\Http\Resources\V1\User\CustomerResource;
 use App\Models\Customer;
 use App\Services\V1\CommonService;
+use App\Traits\ApiResponse;
 use Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ApiService extends CommonService
 {
+    use ApiResponse;
+
     public function __construct()
     {
         parent::__construct(null, [], 'auth');

@@ -10,9 +10,11 @@ use App\Models\Status;
 use App\Models\Story;
 use App\Models\StoryView;
 use App\Services\V1\CommonService;
+use App\Traits\ApiResponse;
 
 class StatusService extends CommonService
 {
+    use ApiResponse;
     protected Customer $customer;
     public function __construct(Customer $customer)
     {
@@ -61,7 +63,7 @@ class StatusService extends CommonService
     {
         try {
             $storyView = StoryView::where('story_id', $story->id)->where('customer_id', $this->customer->id)->first();
-            if(!$storyView){
+            if (!$storyView) {
                 $storyView = new StoryView;
                 $storyView->story_id = $story->id;
                 $storyView->customer_id = $this->customer->id;
@@ -88,8 +90,5 @@ class StatusService extends CommonService
         return $status ?? null;
     }
 
-    private function logError(\Exception $e)
-    {
-        $this->errorLogging(self::class . " " . __FUNCTION__ . " " . $e->getMessage());
-    }
+
 }

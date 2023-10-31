@@ -4,7 +4,9 @@ namespace App\Services\V1\FileProcess;
 
 use App\Repositories\MediaRepository;
 use App\Services\V1\CommonService;
+use App\Traits\ApiResponse;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +15,7 @@ use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
 
 class FileUploaderService extends CommonService
 {
+    use ApiResponse;
     private static $discName = 'public';
     private $file;
     private $acceptedExtensions = ['png', 'jpg', 'jpeg', 'webp'];
@@ -64,8 +67,8 @@ class FileUploaderService extends CommonService
 
                 return $this->mainRepository->store($fileData, $model);
             });
-        } catch (\Exception $e) {
-            return $this->errorResponse($e);
+        } catch (Exception $e) {
+            throw $e;
         }
     }
 
@@ -88,7 +91,8 @@ class FileUploaderService extends CommonService
     private function getPath($withName = true, $pathTitle = 'images/'): string
     {
         $path = $pathTitle . Carbon::today()->format('Y/m/d') . '/';
-        if ($withName) $path .= $this->file->hashName();
+        if ($withName)
+            $path .= $this->file->hashName();
 
         return $path;
     }

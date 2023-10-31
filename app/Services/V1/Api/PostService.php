@@ -13,11 +13,13 @@ use App\Models\Like;
 use App\Models\Post;
 use App\Repositories\PostRepository;
 use App\Services\V1\CommonService;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PostService extends CommonService
 {
+    use ApiResponse;
     protected Customer $customer;
 
     public function __construct(Customer $customer)
@@ -128,10 +130,5 @@ class PostService extends CommonService
     private function getPostsPerPage()
     {
         return 100;
-    }
-
-    private function logError(\Exception $e)
-    {
-        $this->errorLogging(self::class . " " . __FUNCTION__ . " " . $e->getMessage());
     }
 }
