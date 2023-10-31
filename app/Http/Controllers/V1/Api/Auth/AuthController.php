@@ -33,6 +33,11 @@ class AuthController extends Controller
         return $this->authService->register($request);
     }
 
+    public function info()
+    {
+        return $this->authService->profileInfo();
+    }
+
     public function updateProfile(UpdateRequest $request)
     {
         return $this->authService->updateProfile($request);

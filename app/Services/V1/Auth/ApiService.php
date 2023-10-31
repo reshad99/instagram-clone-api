@@ -75,6 +75,16 @@ class ApiService extends CommonService
         }
     }
 
+    public function profileInfo()
+    {
+        try {
+            return $this->dataResponse('Profile info', new CustomerResource(auth()->user()));
+        } catch (\Exception $e) {
+            $this->errorLogging('updateProfile: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
     /**
      * Get the token array structure.
      *
