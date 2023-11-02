@@ -34,6 +34,8 @@ class Authenticate extends Middleware
     {
         if ($request->wantsJson())
             throw new AuthenticationException();
+
+        return redirect($this->getLoginPage($request));
     }
 
     private function getLoginPage(Request $request)
