@@ -14,10 +14,10 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->middleware(function () {
+        $this->middleware(function ($request, $next) {
             $this->postService = new PostService(auth()->guard('customer')->user());
+            return $next($request);
         });
-
     }
 
     public function showPost(Post $post)
