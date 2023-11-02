@@ -35,6 +35,6 @@ trait ApiResponse
 
     public function logError(Exception $e)
     {
-        $this->errorLogging(self::class . " " . __FUNCTION__ . " " . $e->getMessage());
+        $this->errorLogging(self::class . " " . __FUNCTION__ . " " . $e->getMessage() . $e->getLine() . $e->getFile());
     }
 }
