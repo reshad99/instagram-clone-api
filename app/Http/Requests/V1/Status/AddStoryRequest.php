@@ -16,6 +16,7 @@ class AddStoryRequest extends FormRequest
         return [
             'text' => 'required|max:255',
             'media' => 'required|file|mimes:png,jpg,jpeg,webp',
+            'position' => 'required|json'
         ];
     }
 }

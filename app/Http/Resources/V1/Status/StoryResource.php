@@ -17,6 +17,7 @@ class StoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'position' => $this->position,
             'status_id' => $this->status_id,
             'text' => $this->text,
             'media' => new MediaResource($this->media),
