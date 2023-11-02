@@ -15,7 +15,9 @@ class StatusController extends Controller
 
     public function __construct()
     {
-        $this->statusService = new StatusService(auth()->user());
+        $this->middleware(function () {
+            $this->statusService = new StatusService(auth()->user());
+        });
     }
 
     public function getStatuses()
