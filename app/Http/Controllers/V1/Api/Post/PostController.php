@@ -14,7 +14,10 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->postService = new PostService(auth()->guard('customer')->user());
+        $this->middleware(function () {
+            $this->postService = new PostService(auth()->guard('customer')->user());
+        });
+
     }
 
     public function showPost(Post $post)
