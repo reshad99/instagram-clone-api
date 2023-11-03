@@ -29,7 +29,7 @@ class Status extends Model
 
     public function getActiveStoriesAttribute()
     {
-        $activeStories = $this->stories->map(function ($story) {
+        $activeStories = $this->stories->filter(function ($story) {
             if ($story->active == true)
                 return $story;
         });
