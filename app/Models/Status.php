@@ -30,7 +30,7 @@ class Status extends Model
     public function getActiveStoriesAttribute()
     {
         $activeStories = $this->stories->filter(function ($story) {
-                return $story == true;
+                return $story->active == true;
         });
 
         return $activeStories;
