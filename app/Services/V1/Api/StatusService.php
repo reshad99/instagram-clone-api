@@ -35,9 +35,8 @@ class StatusService extends CommonService
     public function getStatusList()
     {
         try {
-            $statuses = Status::whereIn("id", optional($this->customer)->follows->pluck('id'))->get();
-            return $statuses;
-            return $this->dataResponse('Statuses', $statuses ? StatusResource::collection($statuses) : []);
+            $statuses = Status::whereIn("id", $this->customer->follows->pluck('id') ?? [])->get();
+            return $this->dataResponse('Statuses', StatusResource::collection($statuses));
         } catch (\Exception $e) {
             $this->logError($e);
             throw $e;
