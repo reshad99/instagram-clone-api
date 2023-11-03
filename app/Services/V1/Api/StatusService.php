@@ -36,7 +36,7 @@ class StatusService extends CommonService
     {
         try {
             $statuses = Status::whereIn("id", $this->customer->follows->pluck('id') ?? [])->get();
-            $statuses = $statuses->filter(function ($status) {
+            $statuses = $statuses->map(function ($status) {
                 if (count($status->stories) > 0) {
                     return $status;
                 }
