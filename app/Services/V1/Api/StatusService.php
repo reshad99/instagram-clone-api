@@ -43,7 +43,7 @@ class StatusService extends CommonService
                 ->latest()
                 ->get();
             $statuses = $statuses->filter(function ($status) {
-                return !is_null($status->activeStories);
+                return count($status->activeStories);
             });
             return $this->dataResponse('Statuses', StatusResource::collection($statuses));
         } catch (\Exception $e) {
