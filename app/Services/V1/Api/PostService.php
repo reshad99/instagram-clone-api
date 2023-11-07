@@ -57,6 +57,17 @@ class PostService extends CommonService
         }
     }
 
+    public function myPosts()
+    {
+        try {
+            $posts = Post::where('customer_id', $this->customer->id)->latest()->get();
+            return $this->dataResponse('My posts', PostResource::collection($posts));
+        } catch (\Exception $e) {
+            $this->logError($e);
+            throw $e;
+        }
+    }
+
     public function showPost(Post $post)
     {
         try {
@@ -90,7 +101,7 @@ class PostService extends CommonService
     public function likePost(Post $post)
     {
         try {
-            $likeCheck  = Like::where('post_id', $post->id)->where('customer_id', $this->customer->id)->first();
+            $likeCheck = Like::where('post_id', $post->id)->where('customer_id', $this->customer->id)->first();
             if ($likeCheck) {
                 $likeCheck->delete();
             } else {

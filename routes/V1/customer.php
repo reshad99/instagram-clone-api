@@ -31,6 +31,7 @@ Route::middleware(['auth:customer', 'throttle:60,1'])->group(function () {
 
     Route::prefix('posts')->group(function () {
         Route::get('', [PostController::class, 'getPosts']);
+        Route::get('/me', [PostController::class, 'myPosts']);
         Route::get('/{post}', [PostController::class, 'showPost']);
         Route::post('save', [PostController::class, 'savePost']);
         Route::get('like/{post}', [PostController::class, 'likePost']);

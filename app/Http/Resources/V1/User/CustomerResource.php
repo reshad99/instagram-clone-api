@@ -20,6 +20,9 @@ class CustomerResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'image' => $this->fileable?->path,
+            'follower_count' => $this->followers->count(),
+            'follow_count' => $this->follows->count(),
+            'post_count' => $this->posts->count(),
             'thumbnail_image' => $this->fileable?->thumbnail_path,
             'followed' => $this->followed
         ];

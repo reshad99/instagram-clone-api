@@ -30,6 +30,11 @@ class PostController extends Controller
         return $this->postService->getPosts();
     }
 
+    public function myPosts()
+    {
+        return $this->postService->myPosts();
+    }
+
     public function savePost(SavePostRequest $savePostRequest)
     {
         return $this->postService->savePost($savePostRequest);
