@@ -35,10 +35,13 @@ class StatusService extends CommonService
     public function getStatusList()
     {
         try {
-            $ids = array();
-            $ids = $this->customer->follows->pluck('id');
-            $ids[] = $this->customer->id;
-            $statuses = Status::whereIn("customer_id", $ids)->latest()->get();
+            $followerIds = $this->customer->follows->pluck('id')->toArray();
+            $customerId = $this->customer->id;
+            $statuses = Status::whereIn("customer_id", $followerIds)
+            ->orWhere('customer_id', $customerId)
+            ->orderByRaw("FIELD(customer_id, {$customerId}) DESC")
+            ->latest()
+            ->get();
             return $this->dataResponse('Statuses', StatusResource::collection($statuses));
         } catch (\Exception $e) {
             $this->logError($e);
