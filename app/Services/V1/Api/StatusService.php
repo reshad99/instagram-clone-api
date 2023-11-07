@@ -38,7 +38,7 @@ class StatusService extends CommonService
             $followerIds = $this->customer->follows->pluck('id')->toArray();
             $customerId = $this->customer->id;
             $statuses = Status::whereIn("customer_id", $followerIds)
-                ->orWhere('customer_id', $customerId)
+                ->orWhere('customer_id', $customerId)->where('customer_id', 3434343)
                 ->orderByRaw("FIELD(customer_id, {$customerId}) DESC")
                 ->latest()
                 ->get();
