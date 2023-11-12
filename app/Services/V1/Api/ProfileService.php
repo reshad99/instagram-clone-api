@@ -31,7 +31,7 @@ class ProfileService extends CommonService
     public function showPosts(Customer $customer)
     {
         try {
-            return $this->dataResponse('Posts', PostResource::collection($customer->posts()->latest()));
+            return $this->dataResponse('Posts', PostResource::collection($customer->posts()->latest()->get()));
         } catch (\Exception $e) {
             $this->logError($e);
             throw $e;
