@@ -88,6 +88,13 @@ return [
             'days' => 14,
         ],
 
+        'profile' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/profile/profile.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+        ],
+
         'auth' => [
             'driver' => 'daily',
             'path' => storage_path('logs/auth/auth.log'),
