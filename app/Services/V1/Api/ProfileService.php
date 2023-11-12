@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\V1\Api\Profile;
+namespace App\Services\V1\Api;
 
 use App\Http\Resources\V1\Post\PostResource;
 use App\Http\Resources\V1\User\CustomerResource;
