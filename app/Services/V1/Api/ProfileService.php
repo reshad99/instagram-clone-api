@@ -41,7 +41,7 @@ class ProfileService extends CommonService
     public function showFollowers(Customer $customer)
     {
         try {
-            $followers = $customer->followers;
+            $followers = $customer->followers()->latest()->get();
             return $this->dataResponse('Followers', CustomerResource::collection($followers));
         } catch (\Exception $e) {
             $this->logError($e);
@@ -52,7 +52,7 @@ class ProfileService extends CommonService
     public function showFollows(Customer $customer)
     {
         try {
-            $follows = $customer->follows;
+            $follows = $customer->follows()->latest()->get();
             return $this->dataResponse('Followers', CustomerResource::collection($follows));
         } catch (\Exception $e) {
             $this->logError($e);
