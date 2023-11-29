@@ -23,7 +23,7 @@ class ExploreService extends CommonService
     public function search(string $query)
     {
         try {
-            $users = Customer::where('username', 'LIKE', '%' . $query . '%')->paginate(100);
+            $users = Customer::withCount('posts')->where('username', 'LIKE', '%' . $query . '%')->orderBy('posts_count', 'desc')->paginate(100);
             return new PaginatedResource(CustomerResource::collection($users));
         } catch (\Exception $e) {
             $this->logError($e);
