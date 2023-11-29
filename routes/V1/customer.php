@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\V1\Api\Address\AddressController;
 use App\Http\Controllers\V1\Api\Auth\AuthController;
+use App\Http\Controllers\V1\Api\Explore\ExploreController;
 use App\Http\Controllers\V1\Api\Post\PostController;
 use App\Http\Controllers\V1\Api\Profile\ProfileController;
 use App\Http\Controllers\V1\Api\Status\StatusController;
@@ -35,6 +36,11 @@ Route::middleware(['auth:customer', 'throttle:60,1'])->group(function () {
         Route::get('posts/{customer}', [ProfileController::class, 'showPosts']);
         Route::get('followers/{customer}', [ProfileController::class, 'showFollowers']);
         Route::get('follows/{customer}', [ProfileController::class, 'showFollows']);
+    });
+
+    Route::prefix('explore')->group(function () {
+        Route::get('search/{query}', [ExploreController::class, 'search']);
+        Route::get('latest-posts', [ExploreController::class, 'latestPosts']);
     });
 
     Route::prefix('posts')->group(function () {
