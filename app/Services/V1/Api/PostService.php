@@ -16,6 +16,7 @@ use App\Services\V1\CommonService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PostService extends CommonService
 {

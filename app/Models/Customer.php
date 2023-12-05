@@ -99,13 +99,18 @@ class Customer extends Authenticatable implements JWTSubject
 
     public function getFollowedAttribute(): bool
     {
-        $myId = Auth::user()->id;
-        $follow = Follow::where('follower_id', $myId)->where('followed_id', $this->id)->first();
+        if (auth()->check()) {
+            $myId = Auth::user()->id;
+            $follow = Follow::where('follower_id', $myId)->where('followed_id', $this->id)->first();
 
-        if ($follow) {
-            return true;
+            if ($follow) {
+                return true;
+            }
+
+            return false;
         }
 
         return false;
+
     }
 }

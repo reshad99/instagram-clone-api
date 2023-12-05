@@ -1,82 +1,148 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<button onclick="joinRoom('room1', '4')">
+    Join room
+</button>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" id="csrf-token" content="{{ csrf_token() }}">
+<button onclick="sendMessage('room1', 'hey it is from js')">
+    Send message
+</button>
 
-    <title>Laravel</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+<script>
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     class ChatClient {
+    //         constructor(serverUrl, roomId, userId) {
+    //             this.serverUrl = serverUrl;
+    //             this.roomId = roomId;
+    //             this.userId = userId;
+    //             this.socket = null;
+    //         }
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    //         connect() {
 
-    <style>
-        .chat-row {
-            margin: 50px;
-        }
 
-        ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-        }
+    //             this.socket = new WebSocket(this.serverUrl);
 
-        ul li {
-            padding: 8px;
-            background: #928787;
-            margin-bottom: 20px;
-        }
+    //             this.socket.onopen = () => {
+    //                 console.log('connection established')
+    //                 this.joinRoom();
+    //                 // this.sendToken(token)
+    //                 // this.sendMessage('Hey it is from javascript')
+    //             };
 
-        ul li:nth-child(2n-2) {
-            background: #c3c5c5;
-        }
+    //             this.socket.onmessage = (event) => {
+    //                 const data = JSON.parse(event.data);
+    //                 this.handleMessage(data);
+    //             };
 
-        .chat-input {
-            border: 1px solid lightgray;
-            border-top-right-radius: 10px;
-            border-top-left-radius: 10px;
-            padding: 8px 10px;
-            background-color: #928787
-        }
-    </style>
-</head>
+    //             this.socket.onerror = (error) => {
+    //                 console.error('WebSocket Error:', error);
+    //             };
 
-<body>
+    //             this.socket.onclose = () => {
+    //                 console.log('WebSocket connection closed');
+    //             };
+    //         }
 
-    <div class="container">
-        <div class="row">
-            <div class="chat-content">
-                <ul>
-                </ul>
-            </div>
+    //         joinRoom() {
+    //             const message = {
+    //                 type: 'join_room',
+    //                 room: this.roomId,
+    //                 userId: this.userId
+    //             };
+    //             this.socket.send(JSON.stringify(message));
+    //         }
 
-            <div class="chat-section">
-                <div class="chat-box">
-                    <div class="chat-input bg-white" id="chat-input" contenteditable=""></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"
-        integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous">
-    </script>
+    //         sendMessage(text) {
+    //             const message = {
+    //                 type: 'message',
+    //                 room: this.roomId,
+    //                 userId: this.userId,
+    //                 message: text
+    //             };
+    //             this.socket.send(JSON.stringify(message));
+    //         }
 
-    <script>
-        window.laravel_echo_port = "{{ config('ports.laravel_echo_port') }}";
-    </script>
+    //         sendToken(token) {
+    //             const message = {
+    //                 token: token
+    //             };
+    //             this.socket.send(JSON.stringify(message));
+    //         }
 
-    <script src="//{{ Request::getHost() }}:{{ config('ports.laravel_echo_port') }}/socket.io/socket.io.js"></script>
+    //         handleMessage(data) {
+    //             if (data.type === 'message') {
+    //                 console.log('Message from room:', data.message);
+    //                 // Burada mesajı kullanıcı arayüzünde gösterebilirsiniz.
+    //             }
+    //         }
+    //     }
 
-    <script src="{{ url('js/laravel-echo-setup.js') }}"></script>
-    <script src="{{ url('js/ajax.js') }}"></script>
-    <script src="{{ url('js/socketio.js') }}"></script>
-</body>
+    //     // Kullanımı (örnek)
+    //     const chatClient = new ChatClient('ws://127.0.0.1:8080/', 'room1', '4');
+    //     chatClient.connect();
 
-</html>
+    //     // Örnek: Mesaj göndermek için bir butona tıklandığında
+    //     // document.getElementById('sendButton').addEventListener('click', function() {
+    //     //     const message = document.getElementById('messageInput').value;
+    //     //     chatClient.sendMessage(message);
+    //     // });
+    // });
+</script>
+
+
+<script>
+    const connection = new WebSocket('ws://127.0.0.1:8080/');
+
+    connection.onopen = () => {
+        console.log('connection established')
+
+
+        const token =
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2N1c3RvbWVyL3YxL2xvZ2luIiwiaWF0IjoxNzAxNDM0NzA2LCJuYmYiOjE3MDE0MzQ3MDYsImp0aSI6Im9FZnlnTlhmVHUwcnNXZU0iLCJzdWIiOiI0IiwicHJ2IjoiMWQwYTAyMGFjZjVjNGI2YzQ5Nzk4OWRmMWFiZjBmYmQ0ZThjOGQ2MyJ9.hxOB6t-_V2DkirMxKJ8ssm30aD0LgQEclMZw_Ur3Os4";
+
+        connection.send(JSON.stringify({
+            token: token,
+        }));
+
+
+    }
+
+    function sendDirectMessage(toUserId, message) {
+        const data = {
+            type: 'direct_message',
+            toUserId: toUserId,
+            message: message
+        };
+        connection.send(JSON.stringify(data));
+    }
+
+    function sendMessage(room, message) {
+        const data = {
+            type: 'message',
+            room: room,
+            message: message
+        };
+        connection.send(JSON.stringify(data));
+    }
+
+    function joinRoom(room, userId) {
+        const data = {
+            type: 'join_room',
+            room: room,
+            userId: userId
+        };
+        connection.send(JSON.stringify(data));
+    }
+
+    connection.onerror = (error) => {
+        console.error('WebSocket Error:', error);
+    };
+
+    connection.onmessage = (data) => {
+        console.log('WebSocket message:', data.data);
+    };
+
+    connection.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+</script>

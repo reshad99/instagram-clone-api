@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return 'Working';
+    return view('welcome');
 });
 
 Route::get('/t', [SendMessageController::class, 'index']);
+
