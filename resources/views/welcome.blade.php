@@ -91,7 +91,7 @@
 
 
 <script>
-    const connection = new WebSocket('https://instagram.bakudevs.com/ws');
+    const connection = new WebSocket('wss://127.0.0.1:8080/');
 
     connection.onopen = () => {
         console.log('connection established')
