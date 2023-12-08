@@ -88,7 +88,7 @@ class Server implements MessageComponentInterface
                 if ($user) {
                     $conn->isAuthenticated = true;
                     $conn->userId = $user->id;
-                    $this->userConnections[] = $user->id;
+                    $this->userConnections[$user->id] = $conn;
                     // Doğrulama başarılı, kullanıcıya başarılı yanıt gönderin
                     $conn->send(json_encode(['success' => 'Authenticated']));
                 } else {
