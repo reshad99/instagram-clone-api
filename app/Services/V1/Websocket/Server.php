@@ -2,6 +2,8 @@
 
 namespace App\Services\V1\Websocket;
 
+use App\Models\Customer;
+use App\Models\Room;
 use App\Traits\ApiResponse;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -41,6 +43,9 @@ class Server implements MessageComponentInterface
                 switch ($data->type) {
                     case 'join_room':
                         $this->joinRoom($from, $data->room, $data->userId ?? null);
+                        break;
+                    case 'create_room':
+                        $this->createRoom($from, $data->room, $data->userId ?? null);
                         break;
                     case 'leave_room':
                         $this->leaveRoom($from, $data->room, $data->userId ?? null);
@@ -83,6 +88,7 @@ class Server implements MessageComponentInterface
                 if ($user) {
                     $conn->isAuthenticated = true;
                     $conn->userId = $user->id;
+                    $this->userConnections[] = $user->id;
                     // Doğrulama başarılı, kullanıcıya başarılı yanıt gönderin
                     $conn->send(json_encode(['success' => 'Authenticated']));
                 } else {
@@ -104,6 +110,11 @@ class Server implements MessageComponentInterface
         if ($userId) {
             $this->chatRooms[$roomId][$userId] = $conn;
         }
+    }
+
+    private function createRoom(ConnectionInterface $conn, $byUserId, $toUserId)
+    {
+
     }
 
     private function leaveRoom(ConnectionInterface $conn, $roomId, $userId)
@@ -129,5 +140,18 @@ class Server implements MessageComponentInterface
         if (isset($this->userConnections[$toUserId])) {
             $this->userConnections[$toUserId]->send(json_encode(['message' => $message]));
         }
+    }
+
+    private function checkRoomPermission(int $userId, $roomId): bool
+    {
+        $room = Room::where('uid', $roomId)->first();
+
+        if ($room) {
+            if (in_array($userId, $room->roomMates->pluck('id')->toArray())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
