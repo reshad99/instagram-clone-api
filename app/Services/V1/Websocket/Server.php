@@ -78,6 +78,7 @@ class Server implements MessageComponentInterface
 
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
+        $conn->send(json_encode(['success' => $e->getMessage()]));
         $conn->close();
     }
 
