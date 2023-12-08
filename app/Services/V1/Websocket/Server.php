@@ -159,10 +159,10 @@ class Server implements MessageComponentInterface
         return false;
     }
 
-    private function saveMessage(string $message, string $messageType, int $fromUserId, int $toUserId = null, $roomId = null)
+    private function saveMessage(string $messageText, string $messageType, int $fromUserId, int $toUserId = null, $roomId = null)
     {
         $message = new Message;
-        $message->message = $message;
+        $message->message = $messageText;
         $message->message_type = $messageType;
         $message->from_customer_id = $fromUserId;
         $message->to_customer_id = $toUserId;
