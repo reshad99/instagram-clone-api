@@ -1,4 +1,4 @@
-<button onclick="joinRoom('room1', '4')">
+<button onclick="joinRoom('room1', '3')">
     Join room
 </button>
 
@@ -98,7 +98,7 @@
 
 
         const token =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2N1c3RvbWVyL3YxL2xvZ2luIiwiaWF0IjoxNzAxNDM0NzA2LCJuYmYiOjE3MDE0MzQ3MDYsImp0aSI6Im9FZnlnTlhmVHUwcnNXZU0iLCJzdWIiOiI0IiwicHJ2IjoiMWQwYTAyMGFjZjVjNGI2YzQ5Nzk4OWRmMWFiZjBmYmQ0ZThjOGQ2MyJ9.hxOB6t-_V2DkirMxKJ8ssm30aD0LgQEclMZw_Ur3Os4";
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2luc3RhZ3JhbS5iYWt1ZGV2cy5jb20vYXBpL2N1c3RvbWVyL3YxL2xvZ2luIiwiaWF0IjoxNzAyMDM2MjgxLCJuYmYiOjE3MDIwMzYyODEsImp0aSI6IklPNXZkSzhZdk1YTGc1UzciLCJzdWIiOiIzIiwicHJ2IjoiMWQwYTAyMGFjZjVjNGI2YzQ5Nzk4OWRmMWFiZjBmYmQ0ZThjOGQ2MyJ9.DaynsRsWT9sb7_vXluAsY4Iniq4Ti4trnPjSrU6vBWs";
 
         connection.send(JSON.stringify({
             token: token,
