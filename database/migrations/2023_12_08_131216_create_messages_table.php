@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -17,8 +16,9 @@ return new class extends Migration
             $table->id();
             $table->string('message', 500);
             $table->enum('message_type', ['text', 'photo']);
-            $table->foreignId('room_id')->constrained('rooms');
-            $table->foreignId('customer_id')->constrained('customers');
+            $table->foreignId('room_id')->nullable()->constrained('rooms');
+            $table->foreignId('from_customer_id')->constrained('customers');
+            $table->foreignId('to_customer_id')->constrained('customers');
             $table->softDeletes();
             $table->timestamps();
         });

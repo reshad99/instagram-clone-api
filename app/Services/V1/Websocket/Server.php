@@ -3,6 +3,7 @@
 namespace App\Services\V1\Websocket;
 
 use App\Models\Customer;
+use App\Models\Message;
 use App\Models\Room;
 use App\Traits\ApiResponse;
 use Exception;
@@ -140,6 +141,8 @@ class Server implements MessageComponentInterface
         if (isset($this->userConnections[$toUserId])) {
             $this->userConnections[$toUserId]->send(json_encode(['message' => $message]));
         }
+
+        $this->saveMessage($message, 'text', $from->userId, $toUserId);
     }
 
     private function checkRoomPermission(int $userId, $roomId): bool
@@ -153,5 +156,16 @@ class Server implements MessageComponentInterface
         }
 
         return false;
+    }
+
+    private function saveMessage(string $message, string $messageType, int $fromUserId, int $toUserId = null, $roomId = null)
+    {
+        $message = new Message;
+        $message->message = $message;
+        $message->message_type = $messageType;
+        $message->from_customer_id = $fromUserId;
+        $message->to_customer_id = $toUserId;
+        $message->room_id = $roomId;
+        $message->save();
     }
 }
