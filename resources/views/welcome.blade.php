@@ -6,6 +6,10 @@
     Send message
 </button>
 
+<button onclick="sendDirectMessage('1', 'hey it is from js')">
+    Send direct message
+</button>
+
 
 <script>
     // document.addEventListener('DOMContentLoaded', function() {
