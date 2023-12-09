@@ -42,13 +42,13 @@ class Server implements MessageComponentInterface
             if (isset($data->type)) {
                 switch ($data->type) {
                     case 'join_room':
-                        $this->joinRoom($from, $data->room, $data->userId ?? null);
+                        $this->joinRoom($from, $data->room);
                         break;
                     case 'create_room':
-                        $this->createRoom($from, $data->byUserId, $data->toUserId);
+                        $this->createRoom($from, $data->toUserId);
                         break;
                     case 'leave_room':
-                        $this->leaveRoom($from, $data->room, $data->userId ?? null);
+                        $this->leaveRoom($from, $data->room);
                         break;
                     case 'message':
                         $this->broadcastToRoom($from, $data->room, $data->message);
@@ -106,18 +106,18 @@ class Server implements MessageComponentInterface
         }
     }
 
-    private function joinRoom(ConnectionInterface $conn, $roomId, $userId)
+    private function joinRoom(ConnectionInterface $conn, $roomId)
     {
         $this->checkRoomPermission($conn, $roomId);
 
-        if ($userId) {
-            $this->chatRooms[$roomId][$userId] = $conn;
+        if ($conn->userId) {
+            $this->chatRooms[$roomId][$conn->userId] = $conn;
         }
     }
 
-    private function createRoom(ConnectionInterface $conn, $byUserId, $toUserId)
+    private function createRoom(ConnectionInterface $conn, $toUserId)
     {
-        $uid = $this->generateRoom($byUserId, $toUserId);
+        $uid = $this->generateRoom($conn->userId, $toUserId);
         Log::channel('websocket')->info('create rooma girildi');
         $checkRoom = Room::where('uid', $uid)->first();
         if ($checkRoom) {
@@ -127,17 +127,17 @@ class Server implements MessageComponentInterface
         } else {
             Log::channel('websocket')->info('room generate olundu. ' . $uid);
             $room = Room::create(['uid' => $uid]);
-            $room->roomMates()->attach([$byUserId, $toUserId]);
+            $room->roomMates()->attach([$conn->userId, $toUserId]);
             $conn->send(json_encode(['room' => $uid]));
         }
 
-        $this->joinRoom($conn, $uid, $byUserId);
+        $this->joinRoom($conn, $uid, $conn->userId);
     }
 
-    private function leaveRoom(ConnectionInterface $conn, $roomId, $userId)
+    private function leaveRoom(ConnectionInterface $conn, $roomId, )
     {
-        if ($userId && isset($this->chatRooms[$roomId][$userId])) {
-            unset($this->chatRooms[$roomId][$userId]);
+        if ($conn->userId && isset($this->chatRooms[$roomId][$conn->userId])) {
+            unset($this->chatRooms[$roomId][$conn->userId]);
         }
     }
 
