@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V1\Message;
 
+use App\Http\Resources\V1\User\CustomerResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MessageResource extends JsonResource
@@ -19,7 +20,7 @@ class MessageResource extends JsonResource
             'messageType' => $this->message_type,
             'message' => $this->message,
             'isMine' => $this->from_customer_id == auth()->user()->id ? true : false,
-            'createdBy' => $this->createdBy,
+            'createdBy' => new CustomerResource($this->createdBy),
             'timeDiff' => $this->created_at->diffForHumans()
         ];
     }
