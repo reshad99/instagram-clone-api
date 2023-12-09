@@ -95,6 +95,14 @@ return [
             'days' => 14,
         ],
 
+        'websocket' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/websocket/websocket.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+        ],
+
+
         'profile' => [
             'driver' => 'daily',
             'path' => storage_path('logs/profile/profile.log'),

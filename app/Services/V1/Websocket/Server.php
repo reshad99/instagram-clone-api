@@ -163,10 +163,12 @@ class Server implements MessageComponentInterface
         $room = Room::where('uid', $roomId)->first();
 
         if ($room) {
+            Log::channel('websocket')->info('room var. room json: ' . json_encode($room));
             if (in_array($userId, $room->roomMates->pluck('id')->toArray())) {
+                Log::channel('websocket')->info('in array true');
                 return true;
             }
-        } 
+        }
 
         $conn->send(json_encode(['error' => 'You have no permission to join this room']));
         $conn->close();
