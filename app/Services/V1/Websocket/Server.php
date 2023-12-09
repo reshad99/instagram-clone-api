@@ -14,7 +14,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class Server implements MessageComponentInterface
 {
-    use ApiResponse;
     protected $clients;
     protected $userConnections; // Map user IDs to connections
     protected $chatRooms; // Map room IDs to connections
@@ -46,7 +45,7 @@ class Server implements MessageComponentInterface
                         $this->joinRoom($from, $data->room, $data->userId ?? null);
                         break;
                     case 'create_room':
-                        $this->createRoom($from, $data->room, $data->userId ?? null);
+                        $this->createRoom($from, $data->byUserId, $data->toUserId);
                         break;
                     case 'leave_room':
                         $this->leaveRoom($from, $data->room, $data->userId ?? null);
@@ -116,7 +115,18 @@ class Server implements MessageComponentInterface
 
     private function createRoom(ConnectionInterface $conn, $byUserId, $toUserId)
     {
+        $uid = "";
+        $checkRoom = Room::where('uid', $uid)->first();
+        if ($checkRoom) {
+            $uid = $checkRoom->uid;
+            $conn->send(json_encode(['room' => $uid]));
+        } else {
+            $uid = $this->generateRoom($byUserId, $toUserId);
+            Room::create(['uid' => $uid]);
+            $conn->send(json_encode(['room' => $uid]));
+        }
 
+        $this->joinRoom($conn, $uid, $byUserId);
     }
 
     private function leaveRoom(ConnectionInterface $conn, $roomId, $userId)
@@ -168,5 +178,14 @@ class Server implements MessageComponentInterface
         $message->to_customer_id = $toUserId;
         $message->room_id = $roomId;
         $message->save();
+    }
+
+    private function generateRoom($byUserId, $toUserId)
+    {
+        $users = [$byUserId, $toUserId];
+
+        rsort($users);
+
+        return "room_{$users[0]}_{$users[1]}";
     }
 }
