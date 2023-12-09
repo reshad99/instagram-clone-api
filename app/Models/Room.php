@@ -17,6 +17,15 @@ class Room extends Model
         return $this->belongsToMany(Customer::class, 'room_mates', 'room_id', 'customer_id');
     }
 
+    public function getMyMateAttribute()
+    {
+        foreach ($this->roomMates as $mate) {
+            if (auth()->user()->id != $mate->id) {
+                return $mate;
+            }
+        }
+    }
+
     public function getLastMessageAttribute()
     {
         $message = Message::where('room_id', $this->uid)->latest()->first();
