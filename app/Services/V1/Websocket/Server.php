@@ -118,12 +118,15 @@ class Server implements MessageComponentInterface
     private function createRoom(ConnectionInterface $conn, $byUserId, $toUserId)
     {
         $uid = "";
+        Log::channel('websocket')->info('create rooma girildi');
         $checkRoom = Room::where('uid', $uid)->first();
         if ($checkRoom) {
+            Log::channel('websocket')->info('checkroom tapildi');
             $uid = $checkRoom->uid;
             $conn->send(json_encode(['room' => $uid]));
         } else {
             $uid = $this->generateRoom($byUserId, $toUserId);
+            Log::channel('websocket')->info('room generate olundu. ' . $uid);
             Room::create(['uid' => $uid]);
             $conn->send(json_encode(['room' => $uid]));
         }
