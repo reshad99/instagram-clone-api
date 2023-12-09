@@ -166,8 +166,9 @@ class Server implements MessageComponentInterface
             if (in_array($userId, $room->roomMates->pluck('id')->toArray())) {
                 return true;
             }
-        }
+        } 
 
+        $conn->send(json_encode(['error' => 'You have no permission to join this room']));
         $conn->close();
     }
 
