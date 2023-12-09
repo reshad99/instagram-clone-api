@@ -117,7 +117,7 @@ class Server implements MessageComponentInterface
 
     private function createRoom(ConnectionInterface $conn, $byUserId, $toUserId)
     {
-        $uid = "";
+        $uid = $this->generateRoom($byUserId, $toUserId);
         Log::channel('websocket')->info('create rooma girildi');
         $checkRoom = Room::where('uid', $uid)->first();
         if ($checkRoom) {
@@ -125,9 +125,9 @@ class Server implements MessageComponentInterface
             $uid = $checkRoom->uid;
             $conn->send(json_encode(['room' => $uid]));
         } else {
-            $uid = $this->generateRoom($byUserId, $toUserId);
             Log::channel('websocket')->info('room generate olundu. ' . $uid);
-            Room::create(['uid' => $uid]);
+            $room = Room::create(['uid' => $uid]);
+            $room->roomMates()->attach([$byUserId, $toUserId]);
             $conn->send(json_encode(['room' => $uid]));
         }
 
