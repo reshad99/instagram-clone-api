@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Helpers\CmsSidebar;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Opcodes\LogViewer\Facades\LogViewer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,10 +25,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Gate::define('viewLogViewer', function ($user) {
+        LogViewer::auth(function ($request) {
+            // return true to allow viewing the Log Viewer.
             return true;
         });
-
         view()->composer('admin.inc.left_sidebar', function () {
             $this->generateCmsSidebar();
             view()->share('sidebarItems', CmsSidebar::getInstance()->getItems());
