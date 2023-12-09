@@ -23,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Gate::define('viewLogViewer', function ($user) {
+            return true;
+        });
+
         view()->composer('admin.inc.left_sidebar', function () {
             $this->generateCmsSidebar();
             view()->share('sidebarItems', CmsSidebar::getInstance()->getItems());
