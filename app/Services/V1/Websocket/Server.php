@@ -108,7 +108,7 @@ class Server implements MessageComponentInterface
 
     private function joinRoom(ConnectionInterface $conn, $roomId, $userId)
     {
-        $this->checkRoomPermission($conn, $conn->userId, $roomId);
+        $this->checkRoomPermission($conn, $roomId);
 
         if ($userId) {
             $this->chatRooms[$roomId][$userId] = $conn;
@@ -161,13 +161,13 @@ class Server implements MessageComponentInterface
         $this->saveMessage($message, 'text', $from->userId, $toUserId);
     }
 
-    private function checkRoomPermission(ConnectionInterface $conn, int $userId, $roomId)
+    private function checkRoomPermission(ConnectionInterface $conn, $roomId)
     {
         $room = Room::where('uid', $roomId)->first();
 
         if ($room) {
             Log::channel('websocket')->info('room var. room json: ' . json_encode($room));
-            if (in_array($userId, $room->roomMates->pluck('id')->toArray())) {
+            if (in_array($conn->userId, $room->roomMates->pluck('id')->toArray())) {
                 Log::channel('websocket')->info('in array true');
                 return true;
             }
