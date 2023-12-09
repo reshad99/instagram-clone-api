@@ -108,6 +108,8 @@ class Server implements MessageComponentInterface
 
     private function joinRoom(ConnectionInterface $conn, $roomId, $userId)
     {
+        $this->checkRoomPermission($conn, $conn->userId, $roomId);
+
         if ($userId) {
             $this->chatRooms[$roomId][$userId] = $conn;
         }
@@ -156,7 +158,7 @@ class Server implements MessageComponentInterface
         $this->saveMessage($message, 'text', $from->userId, $toUserId);
     }
 
-    private function checkRoomPermission(int $userId, $roomId): bool
+    private function checkRoomPermission(ConnectionInterface $conn, int $userId, $roomId)
     {
         $room = Room::where('uid', $roomId)->first();
 
@@ -166,7 +168,7 @@ class Server implements MessageComponentInterface
             }
         }
 
-        return false;
+        $conn->close();
     }
 
     private function saveMessage(string $messageText, string $messageType, int $fromUserId, int $toUserId = null, $roomId = null)
