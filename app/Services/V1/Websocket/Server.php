@@ -150,7 +150,9 @@ class Server implements MessageComponentInterface
             foreach ($this->chatRooms[$roomId] as $userId => $client) {
                 if ($from !== $client && $client->resourceId !== $from->resourceId) {
                     $client->send(json_encode(['event' => 'MessageReceived', 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
+                    $from->send(json_encode(['event' => 'room uid is : ' . $roomId]));
                     $roomId = Room::where('uid', $roomId)->first()->id;
+
                     $this->saveMessage($message, 'text', $from->userId, null, $roomId);
                 }
             }
