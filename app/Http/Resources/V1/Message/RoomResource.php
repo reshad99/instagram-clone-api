@@ -19,7 +19,7 @@ class RoomResource extends JsonResource
             'id' => $this->id,
             'uid' => $this->uid,
             'myMate' => new CustomerResource($this->myMate),
-            'lastMessage' => new MessageResource($this->last_message)
+            'lastMessage' => new MessageResource($this->lastMessage)
         ];
     }
 }
