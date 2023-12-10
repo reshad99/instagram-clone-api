@@ -28,7 +28,7 @@ class Room extends Model
 
     public function getLastMessageAttribute()
     {
-        $message = Message::where('room_id', $this->uid)->latest()->first();
+        $message = Message::where('room_id', $this->id)->latest()->first();
         return $message;
     }
 
