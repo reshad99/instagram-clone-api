@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -27,11 +26,10 @@ class Room extends Model
         }
     }
 
-    public function lastMessage(): BelongsTo
+    public function getLastMessageAttribute()
     {
-        // $message = Message::where('room_id', $this->id)->latest()->first();
-        // return $message;
-        return $this->belongsTo(Message::class, 'room_id')->latest()->first();
+        $message = Message::where('room_id', $this->id)->latest()->first();
+        return $message;
     }
 
     public function messages(): HasMany
