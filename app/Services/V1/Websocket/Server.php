@@ -77,7 +77,7 @@ class Server implements MessageComponentInterface
 
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        $conn->send(json_encode(['success' => $e->getMessage()]));
+        $conn->send(json_encode(['event' => 'Error', 'error' => $e->getMessage()]));
         $conn->close();
     }
 
@@ -91,17 +91,17 @@ class Server implements MessageComponentInterface
                     $conn->userId = $user->id;
                     $this->userConnections[$user->id] = $conn;
                     // Doğrulama başarılı, kullanıcıya başarılı yanıt gönderin
-                    $conn->send(json_encode(['success' => 'Authenticated']));
+                    $conn->send(json_encode(['event' => 'Authentication', 'success' => 'Authenticated']));
                 } else {
-                    $conn->send(json_encode(['error' => 'Unauthorized']));
+                    $conn->send(json_encode(['event' => 'Authentication', 'error' => 'Unauthorized']));
                     $conn->close();
                 }
             } catch (Exception $e) {
-                $conn->send(json_encode(['error' => 'Unauthorized']));
+                $conn->send(json_encode(['event' => 'Authentication', 'error' => 'Unauthorized']));
                 $conn->close();
             }
         } else {
-            $conn->send(json_encode(['error' => 'Token not provided']));
+            $conn->send(json_encode(['event' => 'Authentication', 'error' => 'Token not provided']));
             $conn->close();
         }
     }
@@ -123,12 +123,12 @@ class Server implements MessageComponentInterface
         if ($checkRoom) {
             Log::channel('websocket')->info('checkroom tapildi');
             $uid = $checkRoom->uid;
-            $conn->send(json_encode(['room' => $uid]));
+            $conn->send(json_encode(['data' => 'RoomCreated', 'room' => $uid]));
         } else {
             Log::channel('websocket')->info('room generate olundu. ' . $uid);
             $room = Room::create(['uid' => $uid]);
             $room->roomMates()->attach([$conn->userId, $toUserId]);
-            $conn->send(json_encode(['room' => $uid]));
+            $conn->send(json_encode(['event' => 'RoomCreated', 'room' => $uid]));
         }
 
         $this->joinRoom($conn, $uid, $conn->userId);
@@ -146,7 +146,7 @@ class Server implements MessageComponentInterface
         if (isset($this->chatRooms[$roomId])) {
             foreach ($this->chatRooms[$roomId] as $userId => $client) {
                 if ($from !== $client && $client->resourceId !== $from->resourceId) {
-                    $client->send(json_encode(['message' => $message]));
+                    $client->send(json_encode(['event' => 'MessageReceived', 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
                     $roomId = Room::where('uid', $roomId)->first()->id;
                     $this->saveMessage($message, 'text', $from->userId, null, $roomId);
                 }
@@ -157,7 +157,7 @@ class Server implements MessageComponentInterface
     private function sendDirectMessage(ConnectionInterface $from, $toUserId, $message)
     {
         if (isset($this->userConnections[$toUserId])) {
-            $this->userConnections[$toUserId]->send(json_encode(['message' => $message]));
+            $this->userConnections[$toUserId]->send(json_encode(['event' => 'DirectMessageReceived', 'message' => $message]));
         }
 
         $this->saveMessage($message, 'text', $from->userId, $toUserId);
@@ -175,7 +175,7 @@ class Server implements MessageComponentInterface
             }
         }
 
-        $conn->send(json_encode(['error' => 'You have no permission to join this room']));
+        $conn->send(json_encode(['event' => 'PermissionDenied', 'error' => 'You have no permission to join this room']));
         $conn->close();
     }
 
