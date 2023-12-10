@@ -145,6 +145,7 @@ class Server implements MessageComponentInterface
 
     private function broadcastToRoom(ConnectionInterface $from, $roomId, $message)
     {
+        $this->checkRoomPermission($from, $roomId);
         if (isset($this->chatRooms[$roomId])) {
             foreach ($this->chatRooms[$roomId] as $userId => $client) {
                 if ($from !== $client && $client->resourceId !== $from->resourceId) {
