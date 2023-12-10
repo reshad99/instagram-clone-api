@@ -77,7 +77,7 @@ class Server implements MessageComponentInterface
 
     public function onError(ConnectionInterface $conn, \Exception $e)
     {
-        $conn->send(json_encode(['event' => 'Error', 'error' => $e->getMessage()]));
+        $conn->send(json_encode(['event' => 'Error', 'error' => $e->getMessage(), 'line' => $e->getLine()]));
         $conn->close();
     }
 
@@ -89,6 +89,7 @@ class Server implements MessageComponentInterface
                 if ($user) {
                     $conn->isAuthenticated = true;
                     $conn->userId = $user->id;
+                    //if you want to connect only just one client side change $conn->resourceId to $conn->userId
                     $this->userConnections[$conn->resourceId] = $conn;
                     // Doğrulama başarılı, kullanıcıya başarılı yanıt gönderin
                     $conn->send(json_encode(['event' => 'Authentication', 'success' => 'Authenticated']));
@@ -111,6 +112,7 @@ class Server implements MessageComponentInterface
         $this->checkRoomPermission($conn, $roomId);
 
         if ($conn->userId) {
+            //if you want to connect only just one client side change $conn->resourceId to $conn->userId
             $this->chatRooms[$roomId][$conn->resourceId] = $conn;
         }
     }
