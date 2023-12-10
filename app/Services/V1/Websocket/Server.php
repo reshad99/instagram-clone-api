@@ -143,15 +143,15 @@ class Server implements MessageComponentInterface
         }
     }
 
-    private function broadcastToRoom(ConnectionInterface $from, $roomId, $message)
+    private function broadcastToRoom(ConnectionInterface $from, $roomUid, $message)
     {
-        $this->checkRoomPermission($from, $roomId);
-        if (isset($this->chatRooms[$roomId])) {
-            foreach ($this->chatRooms[$roomId] as $userId => $client) {
+        $this->checkRoomPermission($from, $roomUid);
+        if (isset($this->chatRooms[$roomUid])) {
+            foreach ($this->chatRooms[$roomUid] as $userId => $client) {
                 if ($from !== $client && $client->resourceId !== $from->resourceId) {
                     $client->send(json_encode(['event' => 'MessageReceived', 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
-                    $from->send(json_encode(['event' => 'room uid is : ' . $roomId]));
-                    $roomId = Room::where('uid', $roomId)->first()->id;
+                    $from->send(json_encode(['event' => 'room uid is : ' . $roomUid]));
+                    $roomId = Room::where('uid', $roomUid)->first()->id;
 
                     $this->saveMessage($message, 'text', $from->userId, null, $roomId);
                 }
