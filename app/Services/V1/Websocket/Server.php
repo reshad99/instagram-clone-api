@@ -155,6 +155,8 @@ class Server implements MessageComponentInterface
                     $this->saveMessage($message, 'text', $from->userId, null, $roomId);
                 }
             }
+        } else {
+            throw new Exception('You are not a part of this room now. You have to join it before you write a message');
         }
     }
 
