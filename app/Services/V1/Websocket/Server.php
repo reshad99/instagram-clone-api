@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Websocket;
 
+use App\Http\Resources\V1\Message\RoomResource;
 use App\Models\Customer;
 use App\Models\Message;
 use App\Models\Room;
@@ -125,12 +126,12 @@ class Server implements MessageComponentInterface
         if ($checkRoom) {
             Log::channel('websocket')->info('checkroom tapildi');
             $uid = $checkRoom->uid;
-            $conn->send(json_encode(['event' => 'RoomCreated', 'room' => $uid]));
+            $conn->send(json_encode(['event' => 'RoomCreated', 'room' => new RoomResource($checkRoom)]));
         } else {
             Log::channel('websocket')->info('room generate olundu. ' . $uid);
             $room = Room::create(['uid' => $uid]);
             $room->roomMates()->attach([$conn->userId, $toUserId]);
-            $conn->send(json_encode(['event' => 'RoomCreated', 'room' => $uid]));
+            $conn->send(json_encode(['event' => 'RoomCreated', 'room' => new RoomResource($room)]));
         }
 
         $this->joinRoom($conn, $uid, $conn->userId);
@@ -149,9 +150,7 @@ class Server implements MessageComponentInterface
             foreach ($this->chatRooms[$roomUid] as $userId => $client) {
                 if ($from !== $client && $client->resourceId !== $from->resourceId) {
                     $client->send(json_encode(['event' => 'MessageReceived', 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
-                    $from->send(json_encode(['event' => 'room uid is : ' . $roomUid]));
                     $roomId = Room::where('uid', $roomUid)->first()->id;
-
                     $this->saveMessage($message, 'text', $from->userId, null, $roomId);
                 }
             }
