@@ -123,7 +123,7 @@ class Server implements MessageComponentInterface
         if ($checkRoom) {
             Log::channel('websocket')->info('checkroom tapildi');
             $uid = $checkRoom->uid;
-            $conn->send(json_encode(['data' => 'RoomCreated', 'room' => $uid]));
+            $conn->send(json_encode(['event' => 'RoomCreated', 'room' => $uid]));
         } else {
             Log::channel('websocket')->info('room generate olundu. ' . $uid);
             $room = Room::create(['uid' => $uid]);
