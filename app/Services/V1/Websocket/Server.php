@@ -89,7 +89,7 @@ class Server implements MessageComponentInterface
                 if ($user) {
                     $conn->isAuthenticated = true;
                     $conn->userId = $user->id;
-                    $this->userConnections[$user->id] = $conn;
+                    $this->userConnections[$conn->resourceId] = $conn;
                     // Doğrulama başarılı, kullanıcıya başarılı yanıt gönderin
                     $conn->send(json_encode(['event' => 'Authentication', 'success' => 'Authenticated']));
                 } else {
@@ -111,7 +111,7 @@ class Server implements MessageComponentInterface
         $this->checkRoomPermission($conn, $roomId);
 
         if ($conn->userId) {
-            $this->chatRooms[$roomId][$conn->userId] = $conn;
+            $this->chatRooms[$roomId][$conn->resourceId] = $conn;
         }
     }
 
