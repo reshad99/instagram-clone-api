@@ -45,6 +45,9 @@ class Server implements MessageComponentInterface
                     case 'join_room':
                         $this->joinRoom($from, $data->room);
                         break;
+                    case 'delete_room':
+                        $this->deleteRoom($from, $data->room);
+                        break;
                     case 'create_room':
                         $this->createRoom($from, $data->toUserId);
                         break;
@@ -138,10 +141,19 @@ class Server implements MessageComponentInterface
         $this->joinRoom($conn, $uid, $conn->userId);
     }
 
-    private function leaveRoom(ConnectionInterface $conn, $roomId, )
+    private function leaveRoom(ConnectionInterface $conn, $roomId)
     {
         if ($conn->userId && isset($this->chatRooms[$roomId][$conn->userId])) {
             unset($this->chatRooms[$roomId][$conn->userId]);
+        }
+    }
+
+    private function deleteRoom(ConnectionInterface $conn, $roomId)
+    {
+        $room = Room::find($roomId);
+        if ($room) {
+            $room->delete();
+            $conn->send(json_encode(['event' => 'RoomDeleted']));
         }
     }
 
@@ -156,7 +168,7 @@ class Server implements MessageComponentInterface
                     $client->send(json_encode(['event' => 'MessageReceived', 'roomUid' => $roomUid, 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
                 }
             }
-            
+
             $roomId = Room::where('uid', $roomUid)->first()->id;
             $this->saveMessage($message, 'text', $from->userId, null, $roomId);
         } else {
