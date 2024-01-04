@@ -149,17 +149,16 @@ class Server implements MessageComponentInterface
     {
         $from->send(json_encode(['event' => "TryMessaging $roomUid , $message"]));
         if (isset($this->chatRooms[$roomUid]) && isset($this->chatRooms[$roomUid][$from->resourceId])) {
-            $from->send(json_encode(['event' => 'Ife girildi']));
+            $from->send(json_encode(['event' => 'MessageSended', 'roomUid' => $roomUid, 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
+
             foreach ($this->chatRooms[$roomUid] as $userId => $client) {
                 if ($from !== $client && $client->resourceId !== $from->resourceId) {
-                    $from->send(json_encode(['event' => 'ikinci Ife girildi']));
-
                     $client->send(json_encode(['event' => 'MessageReceived', 'roomUid' => $roomUid, 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
-                    $from->send(json_encode(['event' => 'MessageSended', 'roomUid' => $roomUid, 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
-                    $roomId = Room::where('uid', $roomUid)->first()->id;
-                    $this->saveMessage($message, 'text', $from->userId, null, $roomId);
                 }
             }
+            
+            $roomId = Room::where('uid', $roomUid)->first()->id;
+            $this->saveMessage($message, 'text', $from->userId, null, $roomId);
         } else {
             throw new Exception('You are not a part of this room now. You have to join it before you write a message');
         }
