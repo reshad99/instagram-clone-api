@@ -115,6 +115,7 @@ class Server implements MessageComponentInterface
         if ($conn->userId) {
             //if you want to connect only just one client side change $conn->resourceId to $conn->userId
             $this->chatRooms[$roomId][$conn->resourceId] = $conn;
+            $conn->send(json_encode(['event' => 'Joining', 'success' => 'JoinedRoom']));
         }
     }
 
