@@ -115,7 +115,7 @@ class Server implements MessageComponentInterface
     {
         $this->checkRoomPermission($conn, $roomId);
 
-        if ($conn->userId) {
+        if ($conn->userId && !isset($this->chatRooms[$roomId][$conn->resourceId])) {
             //if you want to connect only just one client side change $conn->resourceId to $conn->userId
             $this->chatRooms[$roomId][$conn->resourceId] = $conn;
             $conn->send(json_encode(['event' => 'Joining', 'success' => 'JoinedRoom']));
