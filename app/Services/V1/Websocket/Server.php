@@ -147,8 +147,9 @@ class Server implements MessageComponentInterface
 
     private function broadcastToRoom(ConnectionInterface $from, $roomUid, $message)
     {
-        $from->send(json_encode(['event' => 'TryMessaging']));
+        $from->send(json_encode(['event' => "TryMessaging $roomUid , $message"]));
         if (isset($this->chatRooms[$roomUid]) && isset($this->chatRooms[$roomUid][$from->resourceId])) {
+        $from->send(json_encode(['event' => 'Ife girildi']));
             foreach ($this->chatRooms[$roomUid] as $userId => $client) {
                 if ($from !== $client && $client->resourceId !== $from->resourceId) {
                     $client->send(json_encode(['event' => 'MessageReceived', 'roomUid' => $roomUid, 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
