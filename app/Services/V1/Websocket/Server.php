@@ -150,8 +150,8 @@ class Server implements MessageComponentInterface
         if (isset($this->chatRooms[$roomUid]) && isset($this->chatRooms[$roomUid][$from->resourceId])) {
             foreach ($this->chatRooms[$roomUid] as $userId => $client) {
                 if ($from !== $client && $client->resourceId !== $from->resourceId) {
-                    $client->send(json_encode(['event' => 'MessageReceived', 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
-                    $from->send(json_encode(['event' => 'MessageSended', 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
+                    $client->send(json_encode(['event' => 'MessageReceived', 'roomUid' => $roomUid, 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
+                    $from->send(json_encode(['event' => 'MessageSended', 'roomUid' => $roomUid, 'message' => $message, 'timeDiff' => now()->diffForHumans()]));
                     $roomId = Room::where('uid', $roomUid)->first()->id;
                     $this->saveMessage($message, 'text', $from->userId, null, $roomId);
                 }
